@@ -13,17 +13,8 @@ from mathvec import vec3_t, vec4_t, vec2_t, vec_t
 
 class Winding:
     
-    windingId = 0
-    
-    windingRedoId = 0
-    windingUndoId = 0
-    
-    bWinded = bool
-    bWindingConcave = bool
-    
-    windingPoints = [8]
-    numpoints = [4]
-   ## wfpnts = [4]
+    windingPoints = [8.0]
+    numpoints = int
     
     winding_x = vec3_t
     winding_y = vec3_t
@@ -32,7 +23,7 @@ class Winding:
     # winding order cw, ccw
     winding_order_cw = int
     winding_order_ccw = int
-    
+
     rotation = vec3_t
     
     plane_texcoords = vec2_t
@@ -46,36 +37,6 @@ class Winding:
     bIsBounded = bool
     
     
-    """*PLANE WINDING HUGE*"""
-    def Plane_WindingHuge(plane):
-        i = int
-        bHuge = bool
-        windingSize = int
-        pntPln = int # point on plane
-        wBoundPnts = (0, 1, 2) # winding bounding points
-        w = Winding()
-        
-        for i in range(3):
-            """set the points equal to winding points"""
-            plane.Points[i][0] == w.windingPoints[i][0]
-            plane.Points[i][1] == w.windingPoints[i][1]
-            plane.Points[i][2] == w.windingPoints[i][2]
-            
-            if i not in range(3):
-                print("Plane_WindingHuge : plane windings at ( i ) not == 3...\n")
-                
-            if plane.Points[i] > w.windingPoints[i]:
-                print("Plane_WindingHuge : at ( points ), plane points are bigger than winding points, not bounded!\n")
-                w.bIsBounded == False
-                
-            if plane.Points[i] < w.windingPoints[i]:
-                print("Plane_WindingHuge : at ( points ), plane points are less than winding points, not bounded!\n")
-                w.bIsBounded == False
-                
-            if plane.Points[i] == w.windingPoints[i]:
-                print("plane winding points bounded...\n")
-                w.bIsBounded == True
-
     """select plane vertex"""
     def SelVertex( vert ):
         #quick chck
@@ -86,8 +47,8 @@ class Winding:
                 print( vert )                
     
     """free the winding"""    
-    def Free_Winding(w):
-        del w
+    def Free_Winding( self ):
+        del( self )
     
     
 def getWinding( w : Winding ):

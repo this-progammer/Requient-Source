@@ -10,10 +10,6 @@
 #
 ####################################################################
 
-TEXTURE_FLAG_CAULK = 27
-TEXTURE_FLAG_BOT_CLIP = 37
-TEXTURE_FLAG_BOT_ZONE = 67 # haha, get it
-
 class TextureFlagsDomain:
     def getTextureFlag( flag : int )->int:
         return flag

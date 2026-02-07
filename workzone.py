@@ -16,11 +16,14 @@ from camwnd import*
 from qesmatictypes import*
 from pen import*
 
-
 # the zone brushes are in
 class Workzone:
     sel_zone = vec3_t # x, y, z
     workzone_brush = Brush()
+    workzone_brushes = [Brush()]
+    
+    workzone_mins = vec3_t
+    workzone_maxs = vec3_t
     
 # returns a zone
 def getWorkzone(zone : Workzone):

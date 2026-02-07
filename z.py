@@ -10,6 +10,9 @@
 #
 ####################################################################
 
+ZOUTLINE_BUF = 0x00
+ZOUTLINE_SELBUF = 0x01
+
 class Z:
     zBuffer = [].count( 2048 )
     bDoDirty = bool

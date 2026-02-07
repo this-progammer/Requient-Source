@@ -78,8 +78,8 @@ class REQ_Globals:
     d_globalBrushMode = bool
     d_globalEntityMode = bool
     d_globalGridDrawMode = bool
-    d_globalGridMin = float
-    d_globalGridMax = float
+    d_globalGridMin = ( 0.0, 0.0, 0.0 )
+    d_globalGridMax = ( 0.0, 0.0, 0.0 )
     d_globalBrushSelected = bool
     d_globalDoSmallGrid = bool
     d_globalAutoCaulk = bool
@@ -119,3 +119,12 @@ REQ_MAX_BRUSH_COUNT = int
 VIEW_XY = int
 VIEW_XZ = int
 VIEW_YZ = int
+
+g_MinWorldCoord = ( 0.0, 0.0, 0.0 )
+g_MaxWorldCoord = ( 999.0, 999.0, 999.0 )
+
+def REQUIENT_MESSAGE( msg : str, char : any ):
+    return print( msg, char )
+
+def Floor( F : float ):pass
+def Ceiling( CEIL : float ):pass

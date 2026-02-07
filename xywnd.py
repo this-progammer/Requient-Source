@@ -21,28 +21,19 @@ from brushcreationtool import*
 from box import*
 from brushwrapperapi import*
 from qesmatictypes import*
+from brush_primit import BrushWinding
 
 XY_BUTTON_SIGNAL = QMouseEvent
 
 class XYWnd(QOpenGLWidget):
     
-    xyScale = vec3_t
-    xyNormal = vec3_t
-    xyDrag = vec3_t
-    bReDrawLines = bool
-    xyUndo = int
-    xyRedo = int
-    m_bBrushSelected = bool
-    m_bXyBrushSelect = bool
-    xyPenDrawColor = (0.45, 0.45, 0.40, 0.0)
-    xyPenBrushSelectionColor = vec3_t
-    bXYCurTracking = bool
-    m_pBrushes = [Brush()]
-    m_pXYPrevDrag_Point_t = int
-    m_xyBrush = Brush() # real member brush
     xy_gridSize = int
     g_reqglobals.d_globalGridSize = xy_gridSize
-    xy_s_windings = Winding
+    
+    floor = vec3_t
+    celing = vec3_t
+    mins = vec3_t
+    maxs = vec3_t
     
     def __init__(self, rows=1024, cols=1024, cell_size=50):
         super().__init__()
@@ -101,6 +92,13 @@ class XYWnd(QOpenGLWidget):
             glVertex2f(self.cols * self.cell_size, y)
         glEnd()
         
+    def Draw_Brushes():pass
+    def Draw_BrushesSelected():pass
+    def Draw_Entities():pass
+    def Draw_EntitiesSelected():pass
+    def Draw_ConnectLines():pass
+    
+    def Print_GL_String( char : str, x : int, y : int ):pass
     
     def XYZoomIn( self ):
         w = self.cols
@@ -120,11 +118,24 @@ class XYWnd(QOpenGLWidget):
             
             
         if delt < 0:
-            self.cell_size = 50
+            self.cell_size = 20
             self.XYZoomIn()
         
         
         a0.accept()
+        
+    def mousePressEvent(self, a0):
+        pres = a0.buttons() == Qt.MouseButton.LeftButton
+        
+        if self and pres:
+            b = Brush
+            b = Alloc_Brush()
+            bw = BrushWinding
+            if b != 0:
+                REQUIENT_MESSAGE("XY_NEW_BRUSH_DRAG().", b)
+                
+            UpdateGLWindow( self )
+                
         
                         
         

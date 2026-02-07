@@ -94,17 +94,20 @@ class CameraWnd(QOpenGLWidget):
         glMatrixMode(GL_MODELVIEW)
         glLoadIdentity()
         
+    def CamDraw_Brushes(): pass
+    def CamDraw_Entities(): pass
+    def CamDraw_Wireframe(): pass
+    def CamDraw_Solid(): pass
+    def CamDraw_CullBrushes(): pass
+    def CamFilter_Brushes(): pass
+    def CamFilter_Entities(): pass
+    def CamFilter_TexdefType(): pass
+        
         
         
         
 def hookCameraWindow( glwindow : CameraWnd ):
     return glwindow
-
-def cameraWindowGetBrushSelectionColor( glwindow : CameraWnd )->float:
-    return glwindow.cameraBrushSelColor
-
-def cameraWindowGetSideSelectionColor( glwindow : CameraWnd )->float:
-    return glwindow.cameraSideSelColor
 
 def unhookCameraWindow( glwindow : CameraWnd ):
     del glwindow

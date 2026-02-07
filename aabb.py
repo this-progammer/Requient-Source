@@ -19,9 +19,9 @@ class aabb_spawnable:
 def getAxisAllignedBoundingBox( aabb : aabb_spawnable ):
     return aabb
 
-def getAABB_Bounds( aabb : aabb_spawnable )->float:
-    return aabb.aabb_scalar
+def getAABB_Bounds( aabb : aabb_spawnable ):
+    aabb.aabb_bounds
 
-def getABBB_Points( aabb : aabb_spawnable )->int:
+def getABBB_Points( aabb : aabb_spawnable ):
     return aabb.aabb_bounds
     

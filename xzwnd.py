@@ -16,11 +16,17 @@ from PyQt5.QtCore import Qt
 from OpenGL.GL import*
 from OpenGL_accelerate import*
 from qesmatictypes import*
+from mathvec import vec3_t
 
 class XZWnd(QOpenGLWidget):
     
     xz_gridSize = int
     g_reqglobals.d_globalGridSize = xz_gridSize
+    
+    floor = vec3_t
+    celing = vec3_t
+    mins = vec3_t
+    maxs = vec3_t
     
     def __init__(self, rows=1024, cols=1024, cell_size=50):
         super().__init__()
@@ -78,7 +84,14 @@ class XZWnd(QOpenGLWidget):
             glVertex2f(0, y)
             glVertex2f(self.cols * self.cell_size, y)
         glEnd()
-        
+    
+    def Draw_Brushes():pass
+    def Draw_BrushesSelected():pass
+    def Draw_Entities():pass
+    def Draw_EntitiesSelected():pass
+    def Draw_ConnectLines():pass
+    
+    def Print_GL_String( char : str, x : int, y : int ):pass
             
     def XYZoomIn( self ):
         w = self.cols
@@ -98,7 +111,7 @@ class XZWnd(QOpenGLWidget):
             
             
         if delt < 0:
-            self.cell_size = 50
+            self.cell_size = 20
             self.XYZoomIn()
         
         

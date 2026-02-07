@@ -12,8 +12,6 @@
 
 # brush wrapper api
 
-from scenegraph import WORLD_MIN
-from scenegraph import WORLD_MAX
 from matrix import*
 
 class BrushWrapperAPI:

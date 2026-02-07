@@ -45,7 +45,7 @@ d_AppInstance = QApplication([])    # *MUST INIT APP FIRST OR WINDOW WILL NOT SH
 
 
 #=========*APP STYLE*===========
-d_AppInstance.setStyle('Fusion')
+d_AppInstance.setStyle("GTK+")
 
 
 
@@ -134,6 +134,7 @@ iotext = sys.stdout
 
 main_splitter.addWidget( d_Menubar )
 main_splitter.addWidget( d_ConsoleWindow )  # Bottom: console
+main_splitter.setLineWidth(6)
 
 # Optional: set initial sizes (top bigger than console)
 main_splitter.setSizes( [600, 150] )

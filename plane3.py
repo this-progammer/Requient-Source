@@ -16,17 +16,7 @@ from winding import*
 from normal_projection import*
 import sys
 #
-#   3D Plane
-#
-#       |\ 
-#       | \ 
-#       |  \ 
-#       |   \ 
-#       |    \ 
-#       |     \ 
-#       |      \ 
-#       |       \   
-#       |________\ 
+# Brush Plane
 #
 
 
@@ -43,7 +33,7 @@ class Plane3:
     plnvecs = vA, vB, vC
     
     pln_texcoords = vec2_t
-    plnpnts = [3]
+    pnts = [4]
     
     normal = cross_product(vA, vB, vC)
     PlaneDistance = float

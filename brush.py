@@ -18,39 +18,20 @@ g_BrushClipboard = BrushList()
 
 class Brush:
     
-    # static brush type
-    m_staticBrushType = int
+    mins = vec3_t
+    maxs = vec3_t
     
     brushNumberId = int
-    bBrushIsSel = bool
+    
+    m_bBrushIsSelected = bool
     bSingleSelect = bool
     bMultiSelect = bool
-    
-    brushEdges = [ 12 ]
-    bpnts = Winding.windingPoints
-    
-    brush_mins = vec3_t
-    brush_maxs = vec3_t
-    
-    brushMinWorldCoord = vec3_t
-    brushMaxWorldCoord = vec3_t
-    
-    brushTexCoords = vec3_t
-    
-    def ScaleBrushTexCoords(b)->float:
-        return b.brushTexCoords * 2
-    
-    def ShrinkBrushTexCoords(b)->float:
-        return b.brushTexCoords / 2
-    
-    def FitBrushTexCoords(b)->float:
-        return b.brushTexCoords / 2 * 0.5 - 1 + 0.5
     
     """*BRUSH FACES*"""
     brushFaces = [Face() for i in range( 6 )]
     
     def Brush_AddFace(self, f : Face):
-        return self.brushFaces + [f]
+        return self.brushFaces + [ f ].insert( 1 )
     
     d_btexdef = Texdef()
     
@@ -70,7 +51,7 @@ def getPrivateBrush( private_brush : Brush ):
     return private_brush
 
 def getBrushSelection( brush : Brush ):
-    return brush.bBrushIsSel
+    return brush.m_bBrushIsSelected
 
 def getSingleBrushSelection( brush : Brush ):
     if brush < 0 :

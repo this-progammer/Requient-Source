@@ -15,8 +15,8 @@ BSP_LEAF_NODE = 0x01
 class Bsp:
     
     # BspBrushCount = int = [], use brush list instead
-    BspFaceCount = int = []
-    BspPlaneCount = int = []
+    BspFaceCount = [int]
+    BspPlaneCount = [int]
     
 def getRequientBsp( bsp : Bsp ):
     return bsp
