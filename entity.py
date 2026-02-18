@@ -11,12 +11,21 @@
 ####################################################################
 
 from collision import*
+from mathvec import*
 
 class EntityWorldClass:
     
     entityId = int
     entityOwner = [1] # brush owner or model owner
     entitydef = ""
+    
+    mins = vec3_t
+    maxs = vec3_t
+    
+    d_MinEntityWorldCoord = vec3_t
+    d_MaxEntityWorldCoord = vec3_t
+    
+globalEntityManager = EntityWorldClass
 
 def getEntity( entity : EntityWorldClass ):
     return entity

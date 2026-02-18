@@ -21,14 +21,17 @@ from brushcreationtool import*
 from box import*
 from brushwrapperapi import*
 from qesmatictypes import*
-from brush_primit import BrushWinding
+from brush_primit import*
 
 XY_BUTTON_SIGNAL = QMouseEvent
+
+# XY_DRAG_RANGE
+BOGUS_BRUSH_DRAG = 9999
 
 class XYWnd(QOpenGLWidget):
     
     xy_gridSize = int
-    g_reqglobals.d_globalGridSize = xy_gridSize
+    globalREQGlobalsManager().d_globalGridSize = xy_gridSize
     
     floor = vec3_t
     celing = vec3_t
@@ -42,7 +45,7 @@ class XYWnd(QOpenGLWidget):
         self.cell_size = cell_size
         self.setEnabled(True)
         self.setMouseTracking(True)
-        
+        self.keys = set()
         self.xy_gridSize = self.rows + self.cols
 
     def initializeGL( self ):
@@ -51,7 +54,7 @@ class XYWnd(QOpenGLWidget):
         glDisable(GL_TEXTURE_2D)
         glDisable(GL_TEXTURE_1D)
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
-        
+            
 
     def resizeGL(self, w, h):
         glMatrixMode(GL_PROJECTION)
@@ -91,22 +94,62 @@ class XYWnd(QOpenGLWidget):
             glVertex2f(0, y)
             glVertex2f(self.cols * self.cell_size, y)
         glEnd()
+    
+    
+    
+    def keyPressEvent(self, a0):
+        self.keys.add(a0.key())
+    
+    def keyReleaseEvent(self, a0):
+        self.keys.discard(a0.key())
         
-    def Draw_Brushes():pass
-    def Draw_BrushesSelected():pass
-    def Draw_Entities():pass
-    def Draw_EntitiesSelected():pass
-    def Draw_ConnectLines():pass
+    def mouseDoubleClickEvent(self, a0):
+        c = Qt.MouseButton.RightButton
+        
+        
+        if c:
+            _menu = QMenu(self)
+            _menu.setGeometry(a0.pos().x(), a0.pos().y(), 0, 0)
+            
+            path_node = QAction("&Spawn Path Node", _menu)
+            _menu.addAction(path_node)
+            
+            _menu.addSeparator()
+            
+            target_node = QAction("&Spawn Target Node", _menu)
+            _menu.addAction(target_node)
+            
+            _menu.addSeparator()
+            
+            script_node = QAction("&Spawn Script Node", _menu)
+            _menu.addAction(script_node)
+            
+            _menu.addSeparator()
+            
+            aabb_node = QAction("&Spawn Bounding Box", _menu)
+            _menu.addAction(aabb_node)
+            
+            _menu.addSeparator()
+            
+            caulk_brush = QAction("&Caulk selected brush", _menu)
+            _menu.addAction(caulk_brush)
+            
+            _menu.addSeparator()
+            
+            esp_node = QAction("&Spawn ESP MaxArm Entity", _menu)
+            _menu.addAction(esp_node)
+            
+            _menu.show()
+            
+            
     
-    def Print_GL_String( char : str, x : int, y : int ):pass
     
+    def Print_GL_String( self, char : str, x : int, y : int ): pass
+        
     def XYZoomIn( self ):
         w = self.cols
         h = self.rows
         
-        if self.resize( w, h ):
-            self.resizeGL()
-        self.paintGL()
         UpdateGLWindow( self )
             
     def wheelEvent(self, a0):
@@ -123,22 +166,88 @@ class XYWnd(QOpenGLWidget):
         
         
         a0.accept()
+            
+            
         
+    # handles the NewBrush_Drag event
     def mousePressEvent(self, a0):
         pres = a0.buttons() == Qt.MouseButton.LeftButton
-        
+        pres_x = a0.x()
+        pres_y = a0.y()
         if self and pres:
-            b = Brush
-            b = Alloc_Brush()
-            bw = BrushWinding
-            if b != 0:
-                REQUIENT_MESSAGE("XY_NEW_BRUSH_DRAG().", b)
-                
+            NewBrush_Drag( pres_x, pres_y )
             UpdateGLWindow( self )
                 
-        
-                        
-        
+"""
+/*
+=================================
+    NewBox_Drag()
+=================================
+*/
+"""
+def NewBox_Drag( x : int, y : int ):
+    m_aabb = aabb_spawnable
+    m_mins = ( 1.0, 5.0, 10.0 )
+    m_maxs = ( 10.0, 5.0, 1.0 )
+    
+    boxDoCreation( m_aabb, m_mins, m_maxs, True )
+    
+    if m_aabb == -1:
+        REQUIENT_MESSAGE("New-Box-Drag Tool failed...", m_aabb)
+    
+    
+    if m_aabb != -1:
+        REQUIENT_MESSAGE("New-Box-Drag Tool creation succesfull...", m_aabb)
+"""
+/*
+=================================
+    NewBrush_Drag()
+=================================
+*/
+"""
+def NewBrush_Drag( x : int, y : int ):
+    new_brush = Brush
+
+    mins = new_brush.mins
+    maxs = new_brush.maxs
+    
+    world_mins = g_MinWorldCoord
+    world_maxs = g_MaxWorldCoord
+    
+    workzone_mins = vec3_t
+    workzone_maxs = vec3_t
+    
+    nDim = [ VIEW_XY ] , [ VIEW_XZ ], [ VIEW_YZ ]
+    
+    for k in range( BOGUS_BRUSH_DRAG ):
+        ++k
+    
+    xy_w = Winding
+    
+    new_brush = Alloc_Brush()
+    
+    Brush_Cuboid( new_brush, mins, maxs, True )
+    WindingMake_Brush( xy_w )
+    BrushDraw_XY( new_brush, nDim )
+    Select_Brush( new_brush )
+    REQBuild_Brush( new_brush )
+    
+    if new_brush == 0:
+        del( new_brush )
+        REQUIENT_MESSAGE("NewBrush_Drag Failed... at mouse coords", x and y )
+    
+    if new_brush != 0:
+        REQUIENT_MESSAGE("New-Brush-Drag Tool succesfull...", x and y)
+    
+    return x, y
+    
+def Draw_Brushes():pass
+def Draw_BrushesSelected():pass
+def Draw_Entities():pass
+def Draw_EntitiesSelected():pass
+def Draw_ConnectLines():pass
+
+globalXYManager = XYWnd
 
 # current x [position] in xy window
 def g_XYCurrX(xywnd)->int:
@@ -153,3 +262,5 @@ def g_XYCurrY(xywnd)->int:
 
 def UpdateGLWindow( window : QOpenGLWidget ):
     window.update()
+    
+    

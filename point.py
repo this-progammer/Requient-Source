@@ -32,3 +32,5 @@ def Alloc_Point():
     
 def getPointOrigin( point : ClipPoint )->float:
     return point.position
+
+globalClipManager = ClipPoint

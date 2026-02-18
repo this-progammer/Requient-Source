@@ -50,7 +50,9 @@ class Winding:
     def Free_Winding( self ):
         del( self )
     
-    
+
+globalWindingManager = Winding
+
 def getWinding( w : Winding ):
     return w
 

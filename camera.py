@@ -89,7 +89,7 @@ class Camera:
     
     
     
-    
+globalCameraManager = Camera  
 
 def getCamera( camera : Camera ):
     return camera

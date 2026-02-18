@@ -9,3 +9,8 @@
 #   Use Of Code : This code is to write Software to control ESP32 MaxArm Robot, intended for, New Prairie High School
 #
 ####################################################################
+
+class Scenegraph:
+    def AddNodeToScene( obj : any ): pass
+    
+globalSceneGraphManager = Scenegraph

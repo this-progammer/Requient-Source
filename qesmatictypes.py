@@ -71,7 +71,7 @@ class REQApiWrapper:
 
 # wrapper table
 
-d_ApiWrapperTable = REQApiWrapper
+globalREQApiWrapperManager = REQApiWrapper
 
 class REQ_Globals:
     d_globalGridSize = int
@@ -83,21 +83,25 @@ class REQ_Globals:
     d_globalBrushSelected = bool
     d_globalDoSmallGrid = bool
     d_globalAutoCaulk = bool
+    d_globalSimulationMode = bool
     
     d_globalWin32Scheme = bool
     d_globalBlackScheme = bool
+    
+    d_globalMapSaved = bool
     
 def reqFastPointer( req : REQ_Globals ):
     return req
 
 # call to req globals
-g_reqglobals = REQ_Globals()
+globalREQGlobalsManager = REQ_Globals
+
 
 def RequientGridTableGetAPIWhite()->bool:
-    return g_reqglobals.d_globalWin32Scheme == True
+    return globalREQGlobalsManager().d_globalWin32Scheme == True
     
 def RequientGridTableGetAPIBlack()->bool:
-    return g_reqglobals.d_globalBlackScheme == True
+    return globalREQGlobalsManager().d_globalBlackScheme == True
 
 
 """*WRITE CLEAR COLOR USING TUPLE*"""
@@ -110,8 +114,8 @@ COLOR_GRID_BACKGROUND = ( 255.0, 255.0, 255.0, 0.0 )
 COLOR_GRID_BLOCK = ( 0.0, 0.0, 0.0, 0.0 )
 COLOR_SELBRUSHES = ( 255.0, 0.0, 0.0, 0.65 )
 COLOR_SELLINE = ( 255.0, 255.0, 255.0, 0.0 )
-COLOR_SELBRUSH2D = ( 255.0, 0.0, 0.0, 0.0 )
-COLOR_NOSELBRUSH2D = ( 255.0, 255.0, 255.0, 0.0 )
+COLOR_SELBRUSH2D = ( 255.0, 0.0, 0.0 )
+COLOR_NOSELBRUSH2D = ( 255.0, 255.0, 255.0 )
 COLOR_CAMERA_BACKGROUND = ( 0.30, 0.30, 0.30, 0.0 )
 
 REQ_MAX_BRUSH_COUNT = int
@@ -120,11 +124,11 @@ VIEW_XY = int
 VIEW_XZ = int
 VIEW_YZ = int
 
-g_MinWorldCoord = ( 0.0, 0.0, 0.0 )
-g_MaxWorldCoord = ( 999.0, 999.0, 999.0 )
+g_MinWorldCoord = -64.0 * 1024.0
+g_MaxWorldCoord = 64.0 * 1024.0
 
 def REQUIENT_MESSAGE( msg : str, char : any ):
     return print( msg, char )
 
-def Floor( F : float ):pass
-def Ceiling( CEIL : float ):pass
+REQUIENT_MODULE = "Requient"
+REQUIENT_SIM_MODULE = "Requient Simulation"

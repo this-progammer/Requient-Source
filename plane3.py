@@ -42,6 +42,7 @@ class Plane3:
     
     winding = Winding()
     
+globalPlaneManager = Plane3
     
 def InvertPlane(Plane3) -> bool:
     return Plane3.PlaneInverted == True

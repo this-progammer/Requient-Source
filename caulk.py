@@ -14,5 +14,7 @@ class CaulkWrapperAPI:
     caulkId = int
     caulkName = "Caulk.png"
     
+globalCaulkWrapperAPIManager = CaulkWrapperAPI
+    
 def getCaulkWrapperAPI( api : CaulkWrapperAPI ):
     return api

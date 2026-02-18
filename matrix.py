@@ -22,3 +22,6 @@ matrix_mdl = ( MX, MY, MZ )
     z(0, 0, 1, 0)
      (0, 0, 0, 1) scale   
 """
+
+def Matrix4x4Load()->float:
+    return matrix_mdl + 0.0, 0.0, 1.0

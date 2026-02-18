@@ -19,6 +19,8 @@ from brush import*
 
 class BrushCreationTool(Brush):
     brushCreationId = int
-        
+
+globalBrushCreationToolManager = BrushCreationTool
+
 def getBrushCreationToolHandle( tool : BrushCreationTool ):
     return tool

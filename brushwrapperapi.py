@@ -27,6 +27,8 @@ class BrushWrapperAPI:
     
     def DecrementBrushWrapper( m_brush ):
         return --m_brush
+
+globalBrushWrapperApiManager = BrushWrapperAPI
     
 def getBrushWrapperAPIModule( api : BrushWrapperAPI ):
     return api

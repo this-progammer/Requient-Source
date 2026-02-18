@@ -24,36 +24,58 @@ from algotool import*
 from brushlist import*
 from workzone import Workzone
 from workzone import SetWorldZoneBounds
+from math import*
 
 class CameraWnd(QOpenGLWidget):
-    origin = vec3_t # the camera origin
     
     camera_mins = vec3_t
     camera_maxs = vec3_t
     
     camera_workzone = Workzone
 
+    projection = [16.0]
+
     x = vec3_t
     y = vec3_t
     z = vec3_t
-    pitch = vec3_t
-    yaw = vec3_t
+    pitch = 0.0
+    yaw = 0.0
     fov = 75.0
     aspect = 1
     near = 0.1
-    far = 2000.0
+    far = 45.0
+    movespeed = 0.1
+    
+    origin = ( 0.0, 0.0, 5.0 )
+
+
+    """CAMERA MATH"""
+    yaw_rad = radians(yaw)
+    pitch_rad = radians(pitch)
+    
+    forward_x = cos(pitch_rad) * cos(yaw_rad)
+    forward_y = cos(pitch_rad) * sin(yaw_rad)
+    forward_z = -sin(pitch_rad)
+    
+    right_x = -sin(yaw_rad)
+    right_y = cos(yaw_rad)
+    right_z = 0
+    
 
     # brushes, pull from the list
     m_pBrushes = g_BrushClipboard.m_nBrushCount
-    m_pBrush = Brush()
-    m_pFaces = Face()
-    m_pFace = Face()
-    m_pSideSel = Face()
-    m_pWindings = Winding()
-    m_pEntities = EntityWorldClass()
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.keys = set()
+        self.setFocusPolicy(Qt.StrongFocus)
+        
+    def keyPressEvent(self, a0):
+        self.keys.add(a0.key())
+        
+    def keyReleaseEvent(self, a0):
+        self.keys.discard(a0.key())
+        
 
     def initializeGL(self):
         PixelsWriteColorToGl( COLOR_CAMERA_BACKGROUND )
@@ -86,23 +108,19 @@ class CameraWnd(QOpenGLWidget):
         glLoadIdentity()
 
     def paintGL(self):
-        PixelsWriteColorToGl( COLOR_CAMERA_BACKGROUND )
+        PixelsWriteColorToGl(COLOR_CAMERA_BACKGROUND)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+        
+        if Qt.Key.Key_W in self.keys:
+            self.origin.x += self.forward_x * self.movespeed
+            self.origin.y += self.forward_y * self.movespeed
+            self.origin.z += self.forward_z * self.movespeed
+        
+        
     
-
-        # Modelview reset and camera
-        glMatrixMode(GL_MODELVIEW)
         glLoadIdentity()
-        
-    def CamDraw_Brushes(): pass
-    def CamDraw_Entities(): pass
-    def CamDraw_Wireframe(): pass
-    def CamDraw_Solid(): pass
-    def CamDraw_CullBrushes(): pass
-    def CamFilter_Brushes(): pass
-    def CamFilter_Entities(): pass
-    def CamFilter_TexdefType(): pass
-        
+    
+        CamDraw_Wireframe()
         
         
         
@@ -141,7 +159,24 @@ def getCameraWindowNear( glwindow : CameraWnd )->float:
 def getCameraWindowFar( glwindow : CameraWnd )->float:
     return glwindow.far
 
+def CamDraw_Brushes(): pass
+def CamDraw_Entities(): pass
+def CamDraw_Wireframe():
+    glColor4f(COLOR_SELBRUSHES[0], COLOR_SELBRUSHES[1], COLOR_SELBRUSHES[2], COLOR_SELBRUSHES[3])
+    glBegin(GL_TRIANGLES)
+    glVertex3f(-0.5, -0.5, -2.0)
+    glVertex3f(0.5, -0.5, -2.0)
+    glVertex3f(0.0, 0.5, -2.0)
+    glEnd()
+            
+def CamDraw_Solid(): pass
+def CamDraw_CullBrushes(): pass
+def CamFilter_Brushes(): pass
+def CamFilter_Entities(): pass
+def CamFilter_TexdefType(): pass
+        
 
+globalCameraPanelManager = CameraWnd
 
 # set worldzone bounds for camera
 SetWorldZoneBounds( CameraWnd.camera_workzone, CameraWnd.camera_mins, CameraWnd.camera_maxs )

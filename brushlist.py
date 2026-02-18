@@ -18,6 +18,8 @@ class BrushList:
     m_nBrushCount = int
     m_bBrushEmpty = bool # is the brush list
     
+globalBrushListManager = BrushList
+    
     
 def getBrushList( list : BrushList ):
     return list

@@ -38,5 +38,6 @@ class __Algorithim__:
             #============
     # reserve(), cleaned this up old code was bad
     def reserve( num )->int:
-        return num
-        
+        GetAt( num ) 
+
+globalAlgorithimManager = __Algorithim__

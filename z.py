@@ -18,3 +18,5 @@ class Z:
     bDoDirty = bool
     zRow = int
     zColumn = int
+    
+globalZManager = Z

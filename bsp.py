@@ -18,6 +18,8 @@ class Bsp:
     BspFaceCount = [int]
     BspPlaneCount = [int]
     
+globalBspManager = Bsp    
+
 def getRequientBsp( bsp : Bsp ):
     return bsp
 

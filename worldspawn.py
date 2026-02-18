@@ -23,6 +23,8 @@ class WorldSpawnClass:
     m_pWrldSpwnKey = ''
     m_PWrldSpwnValue = ''
     
+globalWorldSpawnManager = WorldSpawnClass
+
 def getWorldClassBrush()->int:
     return WORLDSPAWN_CLASS_BRUSH
 

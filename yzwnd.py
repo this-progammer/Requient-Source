@@ -21,7 +21,7 @@ from mathvec import vec3_t
 class YZWnd(QOpenGLWidget):
     
     yz_gridSize = int
-    g_reqglobals.d_globalGridSize = yz_gridSize
+    globalREQGlobalsManager().d_globalGridSize = yz_gridSize
     
     floor = vec3_t
     celing = vec3_t
@@ -97,9 +97,6 @@ class YZWnd(QOpenGLWidget):
         w = self.cols
         h = self.rows
         
-        if self.resize( w, h ):
-            self.resizeGL()
-        self.paintGL()
         self.update()
             
     def wheelEvent(self, a0):
@@ -120,3 +117,5 @@ class YZWnd(QOpenGLWidget):
     def mousePressEvent(self, a0):
         if a0.button() == Qt.MouseButton.LeftButton:
             print("YZ : New Brush Drag... at", a0.pos(), "\n")
+            
+globalYZManager = YZWnd

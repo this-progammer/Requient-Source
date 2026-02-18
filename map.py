@@ -32,8 +32,6 @@ class MapDocument:
     m_pEntities = EntityWorldClass()
     m_pBrushes = any
     
-    m_fMapWorldCoord = 9999.0
-    
     # check for nonviscol brushes, brushes that have degenerate collision or visibility
     m_bChckNoviscolSelBrushes = bool
     
@@ -62,8 +60,9 @@ class MapDocument:
         print()
         
     
-    
-        
+
+globalMapManager = MapDocument
+  
 def getMapDocument( map : MapDocument ):
     return map 
 

@@ -40,6 +40,14 @@ def VectorScale(a, b, c):
 def VectorSnap( v, p )->float:
     return v[0][1][2] * p / 2 * 0.5
 
-MX = ( 1, 0, 0 )
-MY = ( 0, 1, 0 )
-MZ = ( 0, 0, 1 )
+# vector real snap
+def Vector_Snap( v : float ):    
+    v = vec3_t
+    i = int
+    for i in range( 3 ):
+        v[i] = (vec_t).__floor__( v[i] + 0.5 )
+
+
+X_AXIS = ( 1.0, 0.0, 0.0 )
+Y_AXIS = ( 0.0, 1.0, 0.0 )
+Z_AXIS = ( 0.0, 0.0, 1.0 )

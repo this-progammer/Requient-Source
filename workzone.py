@@ -25,6 +25,8 @@ class Workzone:
     workzone_mins = vec3_t
     workzone_maxs = vec3_t
     
+globalWorkzoneManager = Workzone
+
 # returns a zone
 def getWorkzone(zone : Workzone):
     return zone

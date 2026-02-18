@@ -25,10 +25,9 @@ class Face:
     
     """face points"""
     facePoints = [0, 0, 0, 0]
-    pointA = facePoints[0]
-    pointB = facePoints[1]
-    pointC = facePoints[2]
-    pointD = facePoints[3]
+
+    normal = vec3_t
+
     faceBounds = vec3_t
     faceFlipped = bool
     """does the point go inside the bounds???"""
@@ -95,6 +94,8 @@ def Face_BeginPlaneWinding(pF : Face):
             
         return pF
     
+globalFaceManager = Face
+
 def getFace( f : Face ):
     return f
 

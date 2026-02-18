@@ -21,6 +21,9 @@ class Brush:
     mins = vec3_t
     maxs = vec3_t
     
+    d_MinWorldBrushCoord = vec3_t
+    d_MaxWorldBrushCoord = vec3_t
+    
     brushNumberId = int
     
     m_bBrushIsSelected = bool
@@ -31,9 +34,24 @@ class Brush:
     brushFaces = [Face() for i in range( 6 )]
     
     def Brush_AddFace(self, f : Face):
-        return self.brushFaces + [ f ].insert( 1 )
+        return self.brushFaces + 1
+    
+    def Brush_Clear( self ):
+        del( self )
+    
+    def BrushSnapPlanes( v : float ):
+        v = vec3_t
+        i = int
+        for i in range( 3 ):
+            v[i] = ( vec_t ).__floor__( v[i] + 0.5 )
     
     d_btexdef = Texdef()
+    
+    def createAndAddFace( self, m_type : float, pts1 : float, pts2 : float ):
+        pass
+    
+    
+globalBrushManager = Brush
     
     
 class BrushModule:
@@ -97,6 +115,7 @@ def addBrushToClipboard( brush : Brush, c : int ):
         g_BrushClipboard.m_nBrushCount == c
         
 # solid brush cube
+"""
 def Brush_Create(b : Brush, mins : float, maxs : float, texdef : Texdef ):
     i = int
     j = int
@@ -106,7 +125,7 @@ def Brush_Create(b : Brush, mins : float, maxs : float, texdef : Texdef ):
     
     for i in range( 100 ):
         print("BRUSH CREATION [0][1][2][3][4][5]...")
-    
+""" 
         
 def glREQDrawBrush( b : Brush ):
     j = int

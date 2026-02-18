@@ -38,6 +38,74 @@ g_PtrSelectedBrushes = list([Brush()])
 g_PtrCaulkedBrushes = list([Brush()])
 g_PtrClippedBrushes = list([Brush()])
 
+"""*Inline Primitive Functions*"""
+def InlinePrimit_BrushSubtract():
+    return globalBrushManager().maxs - globalBrushManager().maxs
+
+def InlinePrimit_BrushAdd():
+    return globalBrushManager().mins + globalBrushManager().maxs
+
+def InlinePrimit_BrushScale():
+    return globalBrushManager().maxs * globalBrushManager().mins
+
+def GetBrush_MinWorldCoord( b : Brush ):
+    m_brush = b
+    return m_brush.d_MinWorldBrushCoord
+
+def GetBrush_MaxWorldCoord( b : Brush ):
+    m_brush = b
+    return m_brush.d_MaxWorldBrushCoord
+
+def Print_BrushMinWorldCoord( m_brush : Brush ):
+    GetAt( GetBrush_MinWorldCoord( m_brush ) )
+    
+def Print_BrushMaxWorldCoord( m_brush : Brush ):
+    GetAt( GetBrush_MaxWorldCoord( m_brush ) )
+
+"""*DrawBrush_Mins()*"""
+def DrawBrush_Mins( m_brush : Brush ):
+    glBegin(GL_POLYGON )
+    for i in range( 3 ):
+        glVertex3fv( m_brush.mins[i] )
+    glEnd()
+    
+"""*DrawBrush_Maxs()*"""
+def DrawBrush_Maxs( m_brush : Brush ):
+    glBegin(GL_POLYGON)
+    for i in range(3):
+        glVertex3fv( m_brush.maxs[i] )
+    glEnd()
+    
+"""
+/*
+=================================
+    New_BrushMinWorldCoord()
+=================================
+*/
+"""
+def New_BrushMinWorldCoord( m_brush : Brush, coord : float ):
+    return m_brush.d_MinWorldBrushCoord == coord
+
+"""
+/*
+=================================
+    New_BrushMaxWorldCoord()
+=================================
+*/
+"""
+def New_BrushMaxWorldCoord( m_brush : Brush, coord : float ):
+    return m_brush.d_MaxWorldBrushCoord == coord
+
+"""
+/*
+=================================
+    Rotate_Brush()
+=================================
+*/
+"""
+def Rotate_Brush( b : Brush ):
+    pass
+
 
 class BrushNode:
     m_BrushNodePtr = Brush() # constructed
@@ -58,6 +126,8 @@ class BrushNode:
     def createBrushNode():
         pass
     
+globalBrushNodeManager = BrushNode    
+
 class BrushWinding:
     
     def getBrushWinding( self ):
@@ -194,6 +264,40 @@ class BrushFace:
             for brush.brushFaces in self:
                 --brush.brushFaces <= 36
 
+globalBrushFaceManager = BrushFace
+globalTextureDefinitionManager = Texdef
+
+"""
+/*
+=================================
+    BuildBrush_Windings()
+=================================
+*/
+"""
+def BuildBrush_Windings( m_brush : Brush, snap : bool ):
+    w = Winding
+    face = Face
+    vec = vec_t
+    mins = m_brush.mins
+    maxs = m_brush.maxs
+    
+    if snap != False:
+        globalBrushManager().BrushSnapPlanes( maxs )
+        globalBrushManager().BrushSnapPlanes( mins )
+    
+    # clear brush mins and maxs aka bounds
+    mins[0] = mins[1] = mins[2] = -9999
+    maxs[0] = maxs[1] = maxs[2] = 9999
+    
+    face = m_brush.brushFaces
+    
+    for i in w.numpoints:
+        for j in range( 3 ):
+            v = w.windingPoints[i][j]
+            if v > maxs[j]:
+                maxs[j] = v
+            if v < mins[j]:
+                mins[j] = v
 """
 /*
 =================================
@@ -218,8 +322,8 @@ def TexdefFlagPrimit_Clip( brush : Brush, flag : Texdef ):
 def TexdefFlagPrimit_Caulk( brush : Brush, flag : Texdef ):
     if brush == 0 or -1:
         return
-    if g_reqglobals.d_globalAutoCaulk == True:
-        for brush in g_reqglobals.d_globalBrushSelected:
+    if globalREQGlobalsManager().d_globalAutoCaulk == True:
+        for brush in globalREQGlobalsManager().d_globalBrushSelected:
             callTexdefAllocation()
             brush.d_btexdef = flag.getShader() == Requient_LoadShaderFromName(Requient_ShadersPath, "caulk.png")
             setBrushTexdefCoords( brush, flag.getCoords() )
@@ -265,7 +369,8 @@ def REQBuild_Brush( b : Brush ):
 """
 def Reserve_BrushFaces( n : int ):
     GetAt( n )
-    Brush().Brush_AddFace(Face([n]))
+    n_faces = Face
+    Brush().Brush_AddFace( n_faces )
     
 """
 /*
@@ -311,19 +416,19 @@ def WindingMake_Brush( w : Winding ):
             delattr( f, "DEBUG" )
             REQUIENT_MESSAGE( "Face points less than min world coord, GetAt( %p ) ", GetAt( f ) )
             
-    if newFace == ( 0 ) or ( -1 ):
+    if newFace == 0:
         newFace.__sizeof__() == 0
         free_face( newFace )
         REQUIENT_MESSAGE( "Face is null, invalid, freeing face ( %p )", GetAt( newFace ) )
     
-    if newBrush == ( 0 ) or ( -1 ):
+    if newBrush == 0:
         newBrush.__sizeof__() == 0
         del( newBrush )
         REQUIENT_MESSAGE( "Brush is null, invalid, deleting brush ( %p ) ", GetAt( newBrush ) )
     
     w = newWinding
     
-    if w == ( 0 ) or ( -1 ):
+    if w == 0:
         w.__sizeof__() == 0
         del( w )
         REQUIENT_MESSAGE( "Winding is null, invalid, deleting winding()", GetAt( w ) )
@@ -339,8 +444,99 @@ def WindingMake_Brush( w : Winding ):
         glEnd()
     
     return w
+
+
+
+"""
+/*
+=================================
+    BrushDraw_Face()
+    
+    Draw brush faces
+=================================
+*/
+"""
+def BrushDraw_Face(f : Face):
+    brush = Brush
+    f = face
+    face = brush.brushFaces
+    
+    for i in range( 6 * 4 ):
+        glBegin(GL_POLYGON)
+        glTexCoord2fv(face.points[i][3])
+        glVertex3fv(face.points[i])
+        glEnd()
+        
+    return f
+
+
+"""
+/*
+=================================
+    Brush_Draw()
+    
+    Draws The Whole Polygon
+=================================
+*/
+"""
+def Brush_Draw( b : Brush ):
+    for i in range(6):
+        BrushDraw_Face( b.brushFaces[i] )
+        
+    return b
         
 
+"""
+/*
+=================================
+    ConvexBrush_Winding(), 
+    Brush Creation Method
+    
+    *eating doritios while coding this
+    
+    this method uses : glDrawArrays()
+    
+=================================
+*/
+"""
+def ConvexBrush_Winding( brush : Brush ):
+    cnvx_winding = Winding()
+    pnts = vec3_t.count( [8] )
+    patch = GL_LINE
+    extend = vec3_t
+    normal_winding = vec3_t
+    convex_normal = vec3_t
+    flip = bool
+    convex_brush_array = []
+    junk = vec3_t
+    x, y = int
+    convex_face = Face
+    sel_convex_brush = g_PtrSelectedBrushes.clear()
+    mid_convex = vec3_t
+    
+    for i in range( 10 ):
+        # array has GL_TRIANGLES, faces and points
+        glDrawArrays(GL_TRIANGLES, convex_face.planes[i], pnts[i] )
+    
+    
+
+"""
+/*
+=================================
+    MeshBrush_Winding()
+    Brush Creation Method
+    
+    this method uses : glDrawElements()
+=================================
+*/
+"""
+def MeshBrush_Winding( brush : Brush ):
+    mesh_w = Winding()
+    
+    # testing, this may not be an option if not working properly, dont have time to debug, gotta get this done for GOMEZ and my senior project
+    for i in range(8):
+        glDrawElements(GL_TRIANGLES, 3, 12) # dont know if pygl supports this
+        
 """
 /*
 =================================
@@ -419,7 +615,7 @@ def Brush_OutOfBounds(b : Brush):
 """
 def Scale_Brush(b : Brush):
     faces = b.brushFaces
-    xySize = g_reqglobals.d_globalGridSize
+    xySize = globalREQGlobalsManager().d_globalGridSize
     for i in range(8):
         # make sure brush is selected
         if b.m_bBrushIsSelected != True:
@@ -428,10 +624,10 @@ def Scale_Brush(b : Brush):
         
         if BrushIsSelected( b ):
              for xySize[i] in b.mins[i] and b.maxs[i]:
-                 b.mins[i] == g_reqglobals.d_globalGridMin[i]
-                 b.maxs[i] == g_reqglobals.d_globalGridMax[i]
+                 b.mins[i] == globalREQGlobalsManager().d_globalGridMin[i]
+                 b.maxs[i] == globalREQGlobalsManager().d_globalGridMax[i]
                  VectorScale( faces.points[i], b.mins[i], b.maxs[i] )
-                 if g_reqglobals.d_globalDoSmallGrid:
+                 if globalREQGlobalsManager().d_globalDoSmallGrid:
                      VectorSnap(b.mins[i], b.maxs[i])
                      
     REQBuild_Brush( b )
@@ -445,7 +641,7 @@ def Scale_Brush(b : Brush):
 =================================
 */
 """
-def BrushDraw_XY(b:Brush, view : int ):
+def BrushDraw_XY( b : Brush, view : int ):
     xy_top = 1.0
     xy_left = 3.0
     xy_right = 0.1
@@ -453,7 +649,7 @@ def BrushDraw_XY(b:Brush, view : int ):
     
     if ( view ):
     
-        glBegin(GL_QUADS)
+        glBegin(GL_LINE_LOOP)
         glVertex2f( xy_top, -xy_bottom )
         glVertex2f( -xy_top, xy_bottom )
         glVertex2f( xy_left, -xy_right )
@@ -505,7 +701,7 @@ def BrushMake_Face(b:Brush):
     for i in range(6):
         b.brushFaces[i] == [face].pop(5) # pop 5 faces so one is left
         
-    if face == ( 0 ) or ( -1 ):
+    if face == 0:
         del( face )
         b = Alloc_Brush()
         Reserve_BrushFaces(6)
@@ -518,27 +714,408 @@ def BrushMake_Face(b:Brush):
 """
 /*
 =================================
+    Move_Brush()
+=================================
+*/
+"""
+def Move_Brush( b : Brush ):
+    
+    d_mins = b.mins
+    d_maxs = b.maxs
+    
+    MOUSE_DRAG = Qt.MouseButton.LeftButton
+    DRAG_NUM = 0
+    drag_dir = vec3_t
+
+    # make sure brush is selected, dont want drag NULL
+    if BrushIsSelected( b ) and MOUSE_DRAG[drag_dir]:
+        for i in range( drag_dir ):
+            d_mins[i] == ( g_MinWorldCoord ) + ( g_MaxWorldCoord ) / 2
+            d_maxs[i] == ( g_MaxWorldCoord ) - ( g_MinWorldCoord ) / 2
+            drag_dir == GetAt(d_mins[i] % d_maxs[i]*0.5)
+            ++DRAG_NUM
+            REQUIENT_MESSAGE("Brush move new world position", d_mins[i] and d_maxs[i])
+            
+    REQBuild_Brush( b )
+    
+    return b
+
+"""
+/*
+=================================
+    Select_BrushVertice()
+=================================
+*/
+"""
+def Select_BrushVertice(b:Brush):
+    brush = b
+    
+
+
+"""
+/*
+=================================
     createBrush()
 =================================
 */
 """
 def createBrush( b : Brush, mins : float, maxs : float , bCubed : bool ):
-    pass
+    w = Winding
+    pnts = w.windingPoints
+    
+    f = Face
+    
+    for f in b.brushFaces:
+        Reserve_BrushFaces( 6 )
+        f = Alloc_Face()
+        BuildBrush_Windings( b, True )
+                    
+        
+        
+    
+    return b
 
 """
 /*
 =================================
-    BrushPrimitName()
+    BrushName()
 =================================
 */
 """
-def BrushPrimitName( b : Brush ):
+def Brush_Name( b : Brush ):
     cBuff : str = [2048]
     b.brushNumberId = ++g_nBrushId
-    if g_reqglobals.d_globalBrushSelected == BrushIsSelected( b ) :
+    if globalREQGlobalsManager().d_globalBrushSelected == BrushIsSelected( b ) :
         print( "Brush Selected Number : %i", b.brushNumberId )
         if cBuff == 0:
             cBuff.__delattr__("cBuff")
             print( "cBuff failed at : Ln 83 ( BrushPrimitName )" )
         if cBuff != 0:
             cBuff.count( 'BRUSH', b.brushNumberId, cBuff )
+            
+
+"""
+/*
+=================================
+    Brush_PathNode()
+=================================
+*/
+"""
+def BrushCast_PrimitPathNode(): pass
+
+"""
+/*
+=================================
+    Brush_Cuboid()
+=================================
+*/
+"""
+def Brush_Cuboid( b : Brush, mins : float, maxs : float, select : bool ):
+    cube = { ( 0, 1 ), ( 2, 0 ), ( 1, 2) }
+    aabb = aabb_spawnable
+    boxDoCreation( aabb, mins, maxs, True )
+    
+    for size in range( 3 ):
+        if mins[size] < g_MinWorldCoord:
+            mins[size] = g_MinWorldCoord
+        if maxs[size] > g_MaxWorldCoord:
+            maxs[size] = g_MaxWorldCoord
+    
+    m_brush = b
+    
+    Reserve_BrushFaces( 6 )
+    
+    for i in range( 3 ):
+        planepts1 = vec3_t
+        planepts2 = vec3_t
+
+        planepts1( maxs )
+        planepts2( maxs )
+        
+        planepts2[cube[i][0]] = mins[cube[i][0]]
+        planepts1[cube[i][1]] = mins[cube[i][1]]
+        
+        m_brush.createAndAddFace( maxs, planepts1, planepts2 )
+        
+    for i in range( 3 ):
+        planepts1 = vec3_t
+        planepts2 = vec3_t
+        
+        planepts1( mins )
+        planepts2( mins )
+        
+        planepts1[cube[i][0]] = maxs[cube[i][0]]
+        planepts2[cube[i][1]] = maxs[cube[i][1]]
+        
+        m_brush.createAndAddFace( mins, planepts1, planepts2 )
+        
+    return b
+
+"""
+/*
+=================================
+    Brush_CreateCuboid()
+=================================
+*/
+"""
+def Brush_CreateCuboid( brush : Brush, mins : float, maxs : float, select : bool ):
+    pass
+
+
+"""
+/*
+=================================
+    Write_BrushPrimit()
+=================================
+*/
+"""
+def Write_BrushPrimit( b : Brush ):
+    i = int
+    map = MapDocument()
+    file_name = map.mapDocName
+    map_brush_number = b.brushNumberId    
+    map_brush_mins = b.mins
+    map_brush_maxs = b.maxs
+    map_brush_faces = b.brushFaces
+    map_brush_texdef = b.d_btexdef
+    
+    if globalREQGlobalsManager().d_globalMapSaved == True:
+        for b in map:
+            f = open(file_name+".reqmap1", "w")
+            f.write("Brush\t {map_brush_number}\t ( { map_brush_mins } )\t ( { map_brush_max } ) \t ( {map_brush_faces} )\t Texdef : ( { map_brush_texdef } )")
+            
+"""
+/*
+=================================
+    Select_SingleFace()
+=================================
+*/
+"""
+def Select_SingleFace( b : Brush , f : Face ):
+    f = b.brushFaces
+    ray = vec3_t
+    for calc in range( 6 ):
+        if ray[calc] == f.points[calc]:
+            return [f[calc]]
+        
+"""
+/*
+=================================
+    Brush_Edges()
+=================================
+*/
+"""
+def Brush_Edges():
+    return [ 1, 2, 3, 4, 5, 
+            6, 7, 8, 9, 10, 
+            11, 12 ]
+        
+"""
+/*
+=================================
+    Edge_IsSane()
+=================================
+*/
+"""
+def Edge_IsSane():
+    if Brush_Edges().count(12) == Brush_Edges():
+        return True
+    return False
+
+"""
+/*
+=================================
+    SetBrush_Shader()
+=================================
+*/
+"""
+def SetBrush_Shader( b : Brush, m_shader : str ):
+    m_brush = b
+    m_shader == m_brush.d_btexdef.getShader()
+    return m_shader
+
+"""
+/*
+=================================
+    BrushTexdefCoords()
+=================================
+*/
+"""
+def BrushTexdefCoords():
+    return [ 0.0, 0.1, 
+            1.0, 1.1 ]
+
+"""
+/*
+=================================
+    TexCoords_IsSane()
+=================================
+*/
+"""
+def TexCoords_IsSane():
+    if BrushTexdefCoords().count() == BrushTexdefCoords():
+        return True
+    return False
+
+"""
+/*
+=================================
+    Winding_IntersectFaces()
+=================================
+*/
+"""
+def Winding_IntersectFaces( f : Face ):
+    m_tF, m_bF, m_lF, m_rF, m_fF, m_bkF = Face
+    for f in globalBrushManager().brushFaces:
+        for i in range(3):
+            cross_product(m_tF.normal[i[X_AXIS]][0], m_tF.normal[i[Y_AXIS]][1], m_tF.normal[i[Z_AXIS]][2])
+            m_tF.normal[i] += Y_AXIS
+            for j in range(3):
+                cross_product(m_bF.normal[j[X_AXIS]][0], m_bF.normal[j[Y_AXIS]][1], m_bF.normal[j[Z_AXIS]][2])
+                m_bF.normal[j] -= Y_AXIS
+                for x in range(3):
+                    cross_product(m_lF.normal[x[X_AXIS]][0], m_lF.normal[x[Y_AXIS]][1], m_lF.normal[x[Z_AXIS]][2])
+                    m_lF.normal[x] -= X_AXIS
+                    for z in range(3):
+                        cross_product(m_rF.normal[z[X_AXIS]][0], m_rF.normal[z[Y_AXIS]][1], m_rF.normal[z[Z_AXIS]][2])
+                        m_rF.normal[z] += X_AXIS
+                        for n in range(3):
+                            cross_product(m_fF.normal[n[X_AXIS]][0], m_fF.normal[n[Y_AXIS]][1], m_fF.normal[n[Z_AXIS]][2])
+                            m_fF.normal[n] += Z_AXIS
+                            for e in range(3):
+                                cross_product(m_bkF.normal[e[X_AXIS]][0], m_bkF.normal[e[Y_AXIS]][1], m_bkF.normal[e[Z_AXIS]][2])
+                                m_bkF.normal[e] -= Z_AXIS
+    return f
+
+"""
+/*
+=================================
+    DrawFace_ColsRows()
+=================================
+*/
+"""
+def DrawFace_ColsRows( f : Face ):
+    glBegin(GL_POLYGON)
+    for j in range( 4 ):
+        glTexCoord2fv( f.facePoints[j][2] )
+        glVertex4fv( f.facePoints[j] )
+    glEnd()
+    
+"""
+/*
+=================================
+    DrawBrush_Mesh()
+=================================
+*/
+"""
+def DrawBrush_Mesh( b : Brush ):
+    glBegin(GL_POLYGON)
+    for j in range(8):
+        glTexCoord4sv(b.brushFaces.facePoints[j][4])
+        glVertex3fv(b.brushFaces.facePoints[j])
+    glEnd()
+    
+"""
+/*
+=================================
+    DrawBrush_Planes()
+=================================
+*/
+"""
+def DrawBrush_Planes( p : Plane3 , invert : bool ):
+    glBegin(GL_TRIANGLES)
+    for i in range(3):
+        glVertex3fv(p.plnvecs[i])
+        if invert == True:
+            p.plnvecs = -p.plnvecs[i][0], -p.plnvecs[i][1], -p.plnvecs[i][2]
+            p.PlaneInverted = True
+        else:
+            p.PlaneInverted = False
+    glEnd()
+    
+"""
+/*
+=================================
+    BrushPop_Faces()
+=================================
+*/
+"""
+def BrushPop_Faces( m_brush : Brush ):
+    m_brush.brushFaces.pop(6)
+    
+    
+brush_point_sizes = size_t
+brush_face_sizes = size_t
+brush_min_sizes = size_t
+brush_max_sizes = size_t
+brush_edge_sizes = size_t
+
+"""
+/*
+=================================
+    BrushWrap_Cylinder()
+=================================
+*/
+"""
+def BrushWrap_Cylinder():
+    pass
+
+"""
+/*
+=================================
+    BrushDebugPoint_Sizes()
+=================================
+*/
+"""
+def BrushDebugPoint_Sizes():
+    brush_point_sizes.from_address( 8 )
+    if brush_point_sizes != 8:
+        del( brush_point_sizes )
+        
+"""
+/*
+=================================
+    BrushDebugFace_Sizes()
+=================================
+*/
+"""
+def BrushDebugFace_Sizes():
+    brush_face_sizes.from_address( 6 or 2 )
+    if brush_face_sizes != 6 or 2:
+        del( brush_face_sizes )
+        
+"""
+/*
+=================================
+    BrushDebugMin_Sizes()
+=================================
+*/
+"""
+def BrushDebugMin_Sizes():
+    brush_min_sizes.from_address( 3 )
+    if brush_min_sizes != 3:
+        del( brush_min_sizes )
+        
+"""
+/*
+=================================
+    BrushDebugMax_Sizes()
+=================================
+*/
+"""
+def BrushDebugMax_Sizes():
+    brush_max_sizes.from_address( 3 )
+    if brush_max_sizes != 3:
+        del( brush_max_sizes )
+        
+"""
+/*
+=================================
+    BrushDebugEdge_Sizes()
+=================================
+*/
+"""
+def BrushDebugEdge_Sizes():
+    brush_edge_sizes.from_address( 12 )
+    if brush_edge_sizes != 12:
+        del( brush_edge_sizes )
