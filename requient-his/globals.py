@@ -11,3 +11,10 @@ GLOABL_COUNTY_NAME = str
 GLOBAL_CITY_NAME = str
 GLOBAL_STREET_NAME = str
 GLOBAL_STREET_COMPASS = str
+
+APP_MODULE = 'RequientGIS'
+"""*follows by year not number*"""
+APP_VERSION = '2026'
+
+def appDump( a : any ):
+ del( a )
