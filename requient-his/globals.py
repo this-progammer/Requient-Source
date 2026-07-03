@@ -18,7 +18,7 @@ APP_VERSION = '2026'
 
 """*put vectors in globals*"""
 class Vector:
- def __init__( self, x ):
+ def __init__( self, x = 0.0 ):
   self.x = float( x )
 
 def appDump( a : any ):
