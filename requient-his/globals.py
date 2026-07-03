@@ -16,6 +16,11 @@ APP_MODULE = 'RequientGIS'
 """*follows by year not number*"""
 APP_VERSION = '2026'
 
+"""*put vectors in globals*"""
+Vector = 0.0
+Vector2 = ( 0.0, 0.0 )
+Vector3 = ( 0.0, 0.0, 0.0 )
+
 def appDump( a : any ):
  del( a )
 
