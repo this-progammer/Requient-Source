@@ -21,3 +21,6 @@ def appDump( a : any ):
 
 def appGetAt( i : any ):
  return( i )
+
+def getGlobalString( s : str ):
+ return( s )
