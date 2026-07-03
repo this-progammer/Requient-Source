@@ -18,3 +18,6 @@ APP_VERSION = '2026'
 
 def appDump( a : any ):
  del( a )
+
+def appGetAt( i : any ):
+ return( i )
