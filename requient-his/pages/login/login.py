@@ -13,6 +13,8 @@ class Login:
   m_stringUsername = str
   m_stringPassword = str
   m_boolLoginCredintialsValid = bool
+  m_pUsernameBox = dkg().api.Textbox
+  m_pPasswordBox = dkg().api.Textbox
 
   def getLoginPage( self ):
     return self
