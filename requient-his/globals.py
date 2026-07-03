@@ -1,0 +1,12 @@
+"""*globals.py*"""
+"""
+ july 3 2026
+"""
+
+GLOBAL_COUNTRY_NAME : str
+GLOBAL_CONTINENT_NAME : str
+GLOBAL_STATE_NAME : str
+GLOBAL_REGION_NAME : str
+GLOABL_COUNTY_NAME : str
+GLOBAL_CITY_NAME : str
+GLOBAL_STREET_NAME : str
