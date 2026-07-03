@@ -17,9 +17,9 @@ APP_MODULE = 'RequientGIS'
 APP_VERSION = '2026'
 
 """*put vectors in globals*"""
-Vector = 0.0
-Vector2 = ( 0.0, 0.0 )
-Vector3 = ( 0.0, 0.0, 0.0 )
+class Vector:
+ def __init__( self, x ):
+  self.x = float( x )
 
 def appDump( a : any ):
  del( a )
