@@ -25,4 +25,4 @@ class Login:
       return assert( -1 )
 
     else:
-      pageNextWindow()
+      page_next( 0x292873 )
